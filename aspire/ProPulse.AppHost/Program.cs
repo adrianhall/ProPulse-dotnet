@@ -1,5 +1,4 @@
 using Azure.Provisioning.Sql;
-using Microsoft.Extensions.Options;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -10,18 +9,18 @@ var sqlService = builder.AddAzureSqlServer("sqlService")
         var azureDb = azureResources.OfType<SqlDatabase>().Single();
         azureDb.Sku = new SqlSku() { Name = "GP_S_Gen5_2" };
     })
-    .RunAsContainer();
+    .RunAsContainer(configure => configure.WithLifetime(ContainerLifetime.Persistent));
 
-var articleDb = sqlService.AddDatabase("articlesDB");
+var articlesDb = sqlService.AddDatabase("propulse-articles");
 
-var articleDAC = builder.AddSqlProject<Projects.ProPulse_ArticlesDB>("propulse-articlesdb")
-    .WithConfigureDacDeployOptions(options => options.AllowTableRecreation = false)
-    .WithReference(articleDb)
-    .WaitFor(articleDb);
+var articlesDacPac = builder.AddSqlProject<Projects.ProPulse_ArticlesDB>("articlesdb-dacpac")
+    .WithConfigureDacDeployOptions((options) => options.AllowTableRecreation = false)
+    .WithReference(articlesDb)
+    .WaitFor(articlesDb);
 
 builder.AddDataAPIBuilder("dab")
-    .WithReference(articleDb)
-    .WaitFor(articleDb)
-    .WaitForCompletion(articleDAC);
+    .WithReference(articlesDb, "DefaultConnection")
+    .WaitFor(articlesDb)
+    .WaitForCompletion(articlesDacPac);
 
 builder.Build().Run();
