@@ -1,0 +1,188 @@
+{
+  "$schema": "https://github.com/Azure/data-api-builder/releases/download/v1.4.26/dab.draft.schema.json",
+  "data-source": {
+    "database-type": "mssql",
+    "connection-string": "@env('ConnectionStrings__articleDb')",
+    "options": {
+      "set-session-context": true
+    }
+  },
+  "runtime": {
+    "rest": {
+      "enabled": true,
+      "path": "/api"
+    },
+    "graphql": {
+      "enabled": true,
+      "path": "/graphql",
+      "allow-introspection": true
+    },
+    "host": {
+      "cors": {
+        "origins": ["*"],
+        "allow-credentials": false
+      },
+      "mode": "development"
+    }
+  },
+  "entities": {
+    "Article": {
+      "source": {
+        "object": "dbo.Articles",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Article",
+          "plural": "Articles"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": ["read"]
+        }
+      ],
+      "relationships": {
+        "Attachments": {
+          "target.entity": "Attachment",
+          "cardinality": "many"
+        },
+        "Comments": {
+          "target.entity": "Comment",
+          "cardinality": "many"
+        },
+        "Ratings": {
+          "target.entity": "Rating",
+          "cardinality": "many"
+        },
+        "Tags": {
+          "target.entity": "Tag",
+          "cardinality": "many",
+          "linking.object": "dbo.ArticleTags",
+          "linking.source.fields": ["ArticleId"],
+          "linking.target.fields": ["TagId"]
+        }
+      }
+    },
+    "Attachment": {
+      "source": {
+        "object": "dbo.Attachments",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Attachment",
+          "plural": "Attachments"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": ["read"]
+        }
+      ],
+      "relationships": {
+        "Article": {
+          "target.entity": "Article",
+          "cardinality": "one"
+        }
+      }
+    },
+    "Comment": {
+      "source": {
+        "object": "dbo.Comments",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Comment",
+          "plural": "Comments"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": ["read"]
+        }
+      ],
+      "relationships": {
+        "Article": {
+          "target.entity": "Article",
+          "cardinality": "one"
+        }
+      }
+    },
+    "Rating": {
+      "source": {
+        "object": "dbo.Ratings",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Rating",
+          "plural": "Ratings"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": ["read"]
+        }
+      ],
+      "relationships": {
+        "Article": {
+          "target.entity": "Article",
+          "cardinality": "one"
+        }
+      }
+    },
+    "Tag": {
+      "source": {
+        "object": "dbo.Tags",
+        "type": "table"
+      },
+      "graphql": {
+        "enabled": true,
+        "type": {
+          "singular": "Tag",
+          "plural": "Tags"
+        }
+      },
+      "rest": {
+        "enabled": true
+      },
+      "permissions": [
+        {
+          "role": "anonymous",
+          "actions": ["read"]
+        }
+      ],
+      "relationships": {
+        "Articles": {
+          "target.entity": "Article",
+          "cardinality": "many",
+          "linking.object": "dbo.ArticleTags",
+          "linking.source.fields": ["TagId"],
+          "linking.target.fields": ["ArticleId"]
+        }
+      }
+    }
+  }
+}
