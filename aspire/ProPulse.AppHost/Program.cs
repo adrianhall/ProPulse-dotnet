@@ -23,6 +23,13 @@ var articlesDacPac = builder.AddSqlProject<Projects.ProPulse_ArticlesDB>("articl
     .WithReference(articlesDb)
     .WaitFor(articlesDb);
 
+var identityDb = sqlService.AddDatabase("propulse-identity");
+
+var identityService = builder.AddProject<Projects.ProPulse_IdentityService>("identity-service")
+    .WithReference(identityDb, "IdentityConnection")
+    .WithExternalHttpEndpoints()
+    .WaitFor(identityDb);
+
 builder.AddDataAPIBuilder("dab")
     .WithReference(articlesDb, "DefaultConnection")
     .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development")

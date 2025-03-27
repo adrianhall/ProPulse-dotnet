@@ -1,0 +1,78 @@
+@model ProPulse.IdentityService.ViewModels.ManageViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">User Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="UserName" class="form-label">Username</label>
+                        <input asp-for="UserName" class="form-control" disabled />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control" disabled />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DisplayName" class="form-label">Display Name</label>
+                        <input asp-for="DisplayName" class="form-control" />
+                        <span asp-validation-for="DisplayName" class="text-danger"></span>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input asp-for="EmailConfirmed" class="form-check-input" />
+                        <label asp-for="EmailConfirmed" class="form-check-label">Email Confirmed</label>
+                        <span asp-validation-for="EmailConfirmed" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">User Roles</h5>
+                </div>
+                <div class="card-body">
+                    @for (int i = 0; i < Model.AvailableRoles.Count; i++)
+                    {
+                        <div class="form-check mb-2">
+                            @if (ViewBag.IsCurrentUser && Model.AvailableRoles[i].Name == "Administrator" && Model.AvailableRoles[i].IsSelected)
+                            {
+                                <input type="checkbox" class="form-check-input" checked disabled />
+                                <input type="hidden" name="SelectedRoles" value="Administrator" />
+                                <label class="form-check-label">@Model.AvailableRoles[i].Name <span class="text-muted">(Cannot remove your own Administrator role)</span></label>
+                            }
+                            else
+                            {
+                                <input type="checkbox" name="SelectedRoles" value="@Model.AvailableRoles[i].Name" 
+                                       class="form-check-input" @(Model.AvailableRoles[i].IsSelected ? "checked" : "") />
+                                <label class="form-check-label">@Model.AvailableRoles[i].Name</label>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

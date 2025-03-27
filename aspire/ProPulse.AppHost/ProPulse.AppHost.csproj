@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ProPulse.ArticlesDB\ProPulse.ArticlesDB.sqlproj" />
+    <ProjectReference Include="..\..\src\ProPulse.IdentityService\ProPulse.IdentityService.csproj" />
   </ItemGroup>
 
   <ItemGroup>
