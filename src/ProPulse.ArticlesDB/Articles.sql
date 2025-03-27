@@ -14,7 +14,7 @@ CREATE TABLE [dbo].[Articles] (
     [Content] TEXT NOT NULL,
     [PublishedAt] DATETIME2(6) NULL,
     [PublishedUntil] DATETIME2(6) NULL,
-    [State] VARCHAR(20) NOT NULL DEFAULT 'Draft' CHECK ([State] IN ('Draft', 'Published', 'Retired')),
+    [State] VARCHAR(20) NOT NULL DEFAULT 'Draft' CONSTRAINT CHK_Articles_State CHECK ([State] IN ('Draft', 'Published', 'Retired')),
     [Summary] VARCHAR(4096) NULL,
     [Title] VARCHAR(255) NOT NULL
 );
@@ -27,7 +27,7 @@ CREATE INDEX IDX_Articles_CreatedBy ON [dbo].[Articles]([CreatedBy]);
 GO
 CREATE INDEX IDX_Articles_PublishedAt ON [dbo].[Articles]([PublishedAt]);
 GO
-CREATE INDEX IDX_Articles_PublishedUnitl ON [dbo].[Articles]([PublishedUntil]);
+CREATE INDEX IDX_Articles_PublishedUntil ON [dbo].[Articles]([PublishedUntil]);
 GO
 CREATE INDEX IDX_Articles_State ON [dbo].[Articles]([State]);
 GO
@@ -45,10 +45,16 @@ BEGIN
     IF UPDATE([State])
     BEGIN
         UPDATE [dbo].[Articles]
-        SET [PublishedAt] = CASE WHEN [State] = 'Published' AND [PublishedAt] IS NULL THEN SYSDATETIME() ELSE [PublishedAt] END,
-            [PublishedAt] = CASE WHEN [State] = 'Draft' THEN NULL ELSE [PublishedAt] END,
-            [PublishedUntil] = CASE WHEN [State] = 'Retired' AND [PublishedUntil] IS NULL THEN SYSDATETIME() ELSE [PublishedUntil] END,
-            [PublishedUntil] = CASE WHEN [State] = 'Published' OR [State] = 'Draft' THEN NULL ELSE [PublishedUntil] END
+        SET [PublishedAt] = CASE 
+                WHEN [State] = 'Published' AND [PublishedAt] IS NULL THEN SYSDATETIME() 
+                WHEN [State] = 'Draft' THEN NULL 
+                ELSE [PublishedAt] 
+            END,
+            [PublishedUntil] = CASE 
+                WHEN [State] = 'Retired' AND [PublishedUntil] IS NULL THEN SYSDATETIME() 
+                WHEN [State] = 'Published' OR [State] = 'Draft' THEN NULL 
+                ELSE [PublishedUntil] 
+            END
         WHERE [Id] IN (SELECT [Id] FROM inserted);
     END;
 END;

@@ -11,7 +11,7 @@ CREATE TABLE [dbo].[Ratings] (
     [Version] ROWVERSION NOT NULL,
 
     -- Content
-    [Value] INT NOT NULL CHECK ([Value] BETWEEN 1 AND 5),
+    [Value] INT NOT NULL CONSTRAINT CHK_Ratings_Value CHECK ([Value] BETWEEN 1 AND 5),
 
     -- Relationships
     [ArticleId] UNIQUEIDENTIFIER NOT NULL,

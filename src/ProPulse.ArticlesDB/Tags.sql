@@ -12,11 +12,7 @@ CREATE TABLE [dbo].[Tags] (
 
     -- Content
     [Name] VARCHAR(255) NOT NULL,
-    [NormalizedName] VARCHAR(255) NOT NULL,
-
-    -- Relationships
-    [ArticleId] UNIQUEIDENTIFIER NOT NULL,
-    FOREIGN KEY ([ArticleId]) REFERENCES [dbo].[Articles]([Id]) ON DELETE CASCADE
+    [NormalizedName] VARCHAR(255) NOT NULL
 );
 GO
 
@@ -32,8 +28,6 @@ GO
 CREATE INDEX IDX_Tags_CreatedAt ON [dbo].[Tags]([CreatedAt]);
 GO
 CREATE INDEX IDX_Tags_UpdatedAt ON [dbo].[Tags]([UpdatedAt]);
-GO
-CREATE INDEX IDX_Tags_ArticleId ON [dbo].[Tags]([ArticleId]);
 GO
 
 -- Triggers

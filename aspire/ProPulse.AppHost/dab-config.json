@@ -22,7 +22,10 @@
         "origins": ["*"],
         "allow-credentials": false
       },
-      "mode": "development"
+      "mode": "development",
+      "authentication": {
+        "provider": "StaticWebApps"
+      }
     }
   },
   "entities": {
@@ -64,6 +67,8 @@
           "target.entity": "Tag",
           "cardinality": "many",
           "linking.object": "dbo.ArticleTags",
+          "source.fields": ["Id"],
+          "target.fields": ["Id"],
           "linking.source.fields": ["ArticleId"],
           "linking.target.fields": ["TagId"]
         }
@@ -179,6 +184,8 @@
           "target.entity": "Article",
           "cardinality": "many",
           "linking.object": "dbo.ArticleTags",
+          "source.fields": ["Id"],
+          "target.fields": ["Id"],
           "linking.source.fields": ["TagId"],
           "linking.target.fields": ["ArticleId"]
         }
